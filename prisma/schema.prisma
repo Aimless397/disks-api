@@ -1,0 +1,105 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id                Int           @id @default(autoincrement())
+  uuid              String        @unique @default(uuid())
+  role              String        @default("client")
+  email             String        @unique
+  username          String        @unique
+  password          String
+  firstName         String        @map("first_name")
+  lastName          String        @map("last_name")
+  securityQuestion  String        @map("security_question")
+  securityAnswer    String        @map("security_answer")
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  tokens            Token[]
+  orders            Order[]
+  userReactions     UserReaction[]
+
+  @@map("users")
+}
+
+model Token {
+  id                Int           @id @default(autoincrement())
+  uuid              String        @unique @default(uuid())
+  userId            Int           @map("user_id")
+  user              User          @relation(fields: [userId], references: [id])
+  jti               String        @unique @default(uuid())
+  aud               String?
+  createdAt         DateTime      @default(now()) @map("created_at")
+
+  @@map("tokens")
+}
+
+model Disk {
+  id                Int           @id @default(autoincrement())
+  uuid              String        @unique @default(uuid())
+  name              String
+  genre             String
+  subgenre          String
+  year              Int
+  band              String
+  cover             String?
+  price             Float         @db.Real
+  stock             Int
+  disabled          Boolean       @default(false)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  userReactions     UserReaction[]
+  cartProducts      CartProduct[]
+
+  @@map("disks")
+}
+
+model Order {
+  id                Int           @id @default(autoincrement())
+  uuid              String        @unique @default(uuid())
+  userId            Int           @map("user_id")
+  user              User          @relation(fields: [userId], references: [id])
+  total             Decimal       @db.Decimal(10, 2)
+  paid              Boolean       @default(false)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  cartProducts      CartProduct[]
+
+  @@map("orders")
+}
+
+model UserReaction {
+  id                Int           @id @default(autoincrement())
+  userId            Int           @map("user_id")
+  user              User          @relation(fields: [userId], references: [id])
+  diskId            Int           @map("disk_id")
+  disk              Disk          @relation(fields: [diskId], references: [id])
+  like              Boolean       @default(true)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@map("user_reactions")
+}
+
+model CartProduct {
+  id                Int           @id @default(autoincrement())
+  orderId           Int           @map("order_id")
+  order             Order         @relation(fields: [orderId], references: [id])
+  diskId            Int           @map("disk_id")
+  disk              Disk          @relation(fields: [diskId], references: [id])
+  amount            Int
+  selection_price   Decimal       @db.Decimal(10, 2)
+  state             Boolean       @default(true)
+  createdAt         DateTime      @default(now()) @map("created_at")
+  updatedAt         DateTime      @updatedAt @map("updated_at")
+
+  @@map("cart_products")
+}
