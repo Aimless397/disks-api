@@ -1,0 +1,311 @@
+{
+	"info": {
+		"_postman_id": "081653a5-164a-4124-b0e2-768ad6361884",
+		"name": "NEST-Module",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "disks-api",
+			"item": [
+				{
+					"name": "Auth",
+					"item": [
+						{
+							"name": "Login",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\": \"test1\",\r\n    \"password\": \"password123\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/login",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"login"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Signup",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"role\": \"manager\",\r\n    \"email\": \"test1@gmail.com\",\r\n    \"username\": \"test1\",\r\n    \"password\": \"password123\",\r\n    \"firstName\": \"Name1\",\r\n    \"lastName\": \"Lastname1\",\r\n    \"securityQuestion\": \"Question1\",\r\n    \"securityAnswer\": \"Answer3\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/auth/signup",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Profile",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/users/profile",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"users",
+										"profile"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Logout",
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/auth/logout?token={{token}}",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"auth",
+										"logout"
+									],
+									"query": [
+										{
+											"key": "token",
+											"value": "{{token}}"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Disks",
+					"item": [
+						{
+							"name": "GetAll",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/disks",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"disks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Create",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Stadium Arcadium\",\r\n    \"genre\": \"Rock\",\r\n    \"subgenre\": \"Alt Rock\",\r\n    \"year\": 2006,\r\n    \"band\": \"RHCP\",\r\n    \"price\": 9,\r\n    \"stock\": \"all\",\r\n    \"disabled\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/disks",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"disks"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"Stadium Arcadium\",\r\n    \"genre\": \"Rock\",\r\n    \"subgenre\": \"Alt Rock\",\r\n    \"year\": 2006,\r\n    \"band\": \"RHCP\",\r\n    \"price\": 9,\r\n    \"stock\": 10,\r\n    \"disabled\": false\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/disks/e1a78bc5-3129-4f5d-aa31-35955d5d97es",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"disks",
+										"e1a78bc5-3129-4f5d-aa31-35955d5d97es"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{uri}}/disks/f95276f4-96c1-4f43-83e7-4f0d582f0bd4",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"disks",
+										"f95276f4-96c1-4f43-83e7-4f0d582f0bd4"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Disable",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"disabled\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{uri}}/disks/f3297567-3b0e-424c-84fb-359ad17bca25",
+									"host": [
+										"{{uri}}"
+									],
+									"path": [
+										"disks",
+										"f3297567-3b0e-424c-84fb-359ad17bca25"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"type": "text/javascript",
+								"exec": [
+									""
+								]
+							}
+						}
+					]
+				}
+			]
+		}
+	]
+}
