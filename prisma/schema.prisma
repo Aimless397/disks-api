@@ -66,7 +66,7 @@ model Order {
   uuid              String        @unique @default(uuid())
   userId            Int           @map("user_id")
   user              User          @relation(fields: [userId], references: [id])
-  total             Decimal       @db.Decimal(10, 2)
+  total             Float         @db.Real
   paid              Boolean       @default(false)
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
@@ -96,7 +96,7 @@ model CartProduct {
   diskId            Int           @map("disk_id")
   disk              Disk          @relation(fields: [diskId], references: [id])
   amount            Int
-  selection_price   Decimal       @db.Decimal(10, 2)
+  selectionPrice    Float         @db.Real @map("selection_price")
   state             Boolean       @default(true)
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
