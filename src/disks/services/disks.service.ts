@@ -4,7 +4,6 @@ import { prisma } from '../../prisma';
 import { plainToInstance } from 'class-transformer';
 import { DiskDto } from '../dtos/response/get-disks.dto';
 import { CreateDiskDto } from '../dtos/request/create-disk.dto';
-import { NotFound } from 'http-errors';
 
 @Injectable()
 export class DisksService {

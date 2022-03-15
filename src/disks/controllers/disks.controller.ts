@@ -7,13 +7,8 @@ import {
   Patch,
   Post,
   Query,
-  Request,
   UseGuards,
 } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { Disk } from '@prisma/client';
-import { plainToClass } from 'class-transformer';
-import { LocalAuthGuard } from '../../auth/guards/local-auth.guard';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Roles } from '../../users/decorators/roles.decorator';
 import { Role } from '../../users/enums/user-role.enum';

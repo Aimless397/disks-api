@@ -1,11 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
-import {
-  IsBoolean,
-  IsDecimal,
-  IsNotEmpty,
-  IsNumber,
-  IsString,
-} from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 @Exclude()
 export class CreateDiskDto {
