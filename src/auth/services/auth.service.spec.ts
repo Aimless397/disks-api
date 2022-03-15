@@ -8,8 +8,11 @@ import { CreateUserDto } from '../dtos/request/create-user.dto';
 import { AuthService } from './auth.service';
 import { Role } from '../../users/enums/user-role.enum';
 import { hashSync } from 'bcryptjs';
-import { UnprocessableEntity, NotFound } from 'http-errors';
-import { InternalServerErrorException } from '@nestjs/common/exceptions';
+import { UnprocessableEntity } from 'http-errors';
+import {
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common/exceptions';
 import { Test } from '@nestjs/testing';
 import { JwtModule } from '@nestjs/jwt';
 import { JsonWebTokenError } from 'jsonwebtoken';
@@ -107,7 +110,7 @@ describe('AuthService', () => {
     it('should return an object with accessToken property', async () => {
       const uuid = faker.datatype.uuid();
 
-      const result = await authService.generateAccessToken(uuid);
+      const result = authService.generateAccessToken(uuid);
 
       expect(result).toHaveProperty('accessToken');
     });
@@ -120,7 +123,7 @@ describe('AuthService', () => {
 
       await expect(
         authService.validateUser(username, password),
-      ).rejects.toThrowError(new NotFound('No User found'));
+      ).rejects.toThrowError(new UnauthorizedException('Invalid credentials'));
     });
   });
 });

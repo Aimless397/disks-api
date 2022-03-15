@@ -4,7 +4,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { prisma } from '../../prisma';
-import { UnprocessableEntity, NotFound } from 'http-errors';
+import { UnprocessableEntity } from 'http-errors';
 import { UsersService } from '../../users/services/users.service';
 import { ValidateUserResponse } from '../dtos/response/validate-user-response';
 import { compareSync, hashSync } from 'bcryptjs';
@@ -13,7 +13,6 @@ import { sign, verify } from 'jsonwebtoken';
 import { TokenDto } from '../dtos/response/token.dto';
 import { CreateUserDto } from '../dtos/request/create-user.dto';
 import { plainToInstance } from 'class-transformer';
-import { LoginDto } from '../dtos/request/login.dto';
 import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
