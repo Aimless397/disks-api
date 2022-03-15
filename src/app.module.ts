@@ -1,12 +1,8 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
-import { APP_GUARD } from '@nestjs/core';
 import { AuthModule } from './auth/auth.module';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
-/* import { AppController } from './app.controller';
-import { AppService } from './app.service'; */
 import { DisksModule } from './disks/disks.module';
-import { RolesGuard } from './users/guards/roles.guard';
+import { OrdersModule } from './orders/orders.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -17,20 +13,9 @@ import { UsersModule } from './users/users.module';
     AuthModule,
     DisksModule,
     UsersModule,
+    OrdersModule,
   ],
-  controllers: [
-    /* AppController */
-  ],
-  providers: [
-    /* {
-      provide: APP_GUARD,
-      useClass: JwtAuthGuard,
-    },
-    {
-      provide: APP_GUARD,
-      useClass: RolesGuard,
-    }, */
-    /* AppService */
-  ],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
