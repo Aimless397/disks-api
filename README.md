@@ -45,6 +45,12 @@ $ npm run start:dev
 $ npm run start:prod
 ```
 
+## Generate database tables from migrations
+```bash
+
+$ npx prisma migrate dev
+```
+
 ## Test
 
 ```bash
