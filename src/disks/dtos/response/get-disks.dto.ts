@@ -1,4 +1,5 @@
 import { Exclude, Expose } from 'class-transformer';
+import { ImageType } from '../../enums/image-type.enum';
 
 // get disks response
 @Exclude()
@@ -25,6 +26,9 @@ export class DiskDto {
   readonly cover: string;
 
   @Expose()
+  readonly mimetype: ImageType;
+
+  @Expose()
   readonly price: number;
 
   @Expose()
@@ -32,6 +36,9 @@ export class DiskDto {
 
   @Expose()
   readonly disabled: boolean;
+
+  @Expose()
+  readonly deleted: boolean;
 
   @Expose()
   readonly createdAt: Date;

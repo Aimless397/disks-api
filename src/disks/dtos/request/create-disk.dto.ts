@@ -1,5 +1,11 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 @Exclude()
 export class CreateDiskDto {
@@ -20,7 +26,8 @@ export class CreateDiskDto {
 
   @Expose()
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   readonly year: number;
 
   @Expose()
@@ -30,16 +37,22 @@ export class CreateDiskDto {
 
   @Expose()
   @IsNotEmpty()
-  @IsNumber()
+  @IsPositive()
   readonly price: number;
 
   @Expose()
   @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   readonly stock: number;
 
   @Expose()
   @IsNotEmpty()
   @IsBoolean()
   readonly disabled: boolean;
+
+  @Expose()
+  @IsNotEmpty()
+  @IsBoolean()
+  readonly deleted: boolean;
 }

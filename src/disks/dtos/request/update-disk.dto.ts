@@ -1,45 +1,58 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 @Exclude()
 export class UpdateDiskDto {
   @Expose()
   @IsOptional()
   @IsString()
-  readonly name: string;
+  readonly name?: string;
 
   @Expose()
   @IsOptional()
   @IsString()
-  readonly genre: string;
+  readonly genre?: string;
 
   @Expose()
   @IsOptional()
   @IsString()
-  readonly subgenre: string;
+  readonly subgenre?: string;
 
   @Expose()
   @IsOptional()
-  @IsNumber()
-  readonly year: number;
+  @IsInt()
+  @IsPositive()
+  readonly year?: number;
 
   @Expose()
   @IsOptional()
   @IsString()
-  readonly band: string;
+  readonly band?: string;
 
   @Expose()
   @IsOptional()
-  @IsNumber()
-  readonly price: number;
+  @IsPositive()
+  readonly price?: number;
 
   @Expose()
   @IsOptional()
-  @IsNumber()
-  readonly stock: number;
+  @IsInt()
+  @IsPositive()
+  readonly stock?: number;
 
   @Expose()
   @IsOptional()
   @IsBoolean()
-  readonly disabled: boolean;
+  readonly disabled?: boolean;
+
+  @Expose()
+  @IsOptional()
+  @IsBoolean()
+  readonly deleted?: boolean;
 }

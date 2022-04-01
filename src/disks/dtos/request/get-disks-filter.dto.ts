@@ -1,9 +1,17 @@
-import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 // get disks filter request
 export class GetDisksFilterDto {
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  category?: string;
+  readonly genre?: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  readonly page: number;
+
+  @IsNumber()
+  @IsNotEmpty()
+  readonly limit: number;
 }

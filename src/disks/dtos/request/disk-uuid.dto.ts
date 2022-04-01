@@ -1,10 +1,10 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsUUID } from 'class-validator';
 
 @Exclude()
 export class DiskUUidDto {
   @Expose()
   @IsNotEmpty()
-  @IsString()
+  @IsUUID()
   readonly uuid: string;
 }
