@@ -1,0 +1,132 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type CartProduct {
+  amount: Float!
+  createdAt: DateTime!
+  diskId: Float!
+  orderId: Float!
+  selectionPrice: Float!
+  state: Boolean!
+  updatedAt: DateTime!
+}
+
+input CartProductInput {
+  amount: Float!
+  diskUuid: String!
+  orderId: Float
+  state: Boolean
+}
+
+input CreateDiskInput {
+  band: String!
+  cover: String
+  deleted: Boolean!
+  disabled: Boolean!
+  genre: String!
+  mimetype: String
+  name: String!
+  price: Float!
+  stock: Float!
+  subgenre: String!
+  year: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Disk {
+  band: String!
+  cover: String
+  createdAt: DateTime!
+  disabled: Boolean!
+  genre: String!
+  mimetype: String
+  name: String!
+  price: Float!
+  stock: Float!
+  subgenre: String!
+  updatedAt: DateTime!
+  uuid: String!
+  year: Float!
+}
+
+input GetDisksFilterInput {
+  genre: String
+  limit: Float!
+  page: Float!
+}
+
+type Mutation {
+  createCartProduct(cartProductInput: CartProductInput!, uuid: String!): CartProduct!
+  createDisk(diskInput: CreateDiskInput!): Disk!
+  createOrder: Order!
+  deleteDisk(uuid: String!): Disk!
+  disableDisk(uuid: String!): Disk!
+  likeDisk(uuid: String!): UserReaction!
+  payOrder(uuid: String!): Order!
+  updateDisk(diskInput: UpdateDiskInput!, uuid: String!): Disk!
+  uploadCover(uploadFileInput: UploadFileInput!, uuid: String!): Disk!
+}
+
+type Order {
+  createdAt: DateTime!
+  paid: Boolean!
+  total: Float!
+  updatedAt: DateTime!
+  userId: Float!
+  uuid: String!
+}
+
+type Query {
+  getDisk(uuid: String!): Disk!
+  getDisks(filterInput: GetDisksFilterInput!): [Disk!]!
+  getOrder(uuid: String!): Order!
+  getOrders: [Order!]!
+  profile: User!
+}
+
+input UpdateDiskInput {
+  band: String
+  cover: String
+  deleted: Boolean
+  disabled: Boolean
+  genre: String
+  mimetype: String
+  name: String
+  price: Float
+  stock: Float
+  subgenre: String
+  year: Float
+}
+
+input UploadFileInput {
+  type: String!
+}
+
+type User {
+  createdAt: DateTime!
+  email: String!
+  firstName: String!
+  lastName: String!
+  password: String!
+  role: String!
+  securityAnswer: String!
+  securityQuestion: String!
+  updatedAt: DateTime!
+  username: String!
+  uuid: String!
+}
+
+type UserReaction {
+  createdAt: DateTime!
+  diskId: Float!
+  like: Boolean!
+  likedAt: DateTime!
+  updatedAt: DateTime!
+  userId: Float!
+  uuid: String!
+}
