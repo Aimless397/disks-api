@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, Disk } from '@prisma/client';
+import { Disk, Prisma, PrismaClient } from '@prisma/client';
 import * as faker from 'faker';
 import { AbstractFactory } from './abstract.factory';
 
@@ -18,9 +18,11 @@ export class DiskFactory extends AbstractFactory<Disk> {
         year: input.year ?? faker.date.past(50).getFullYear(),
         band: input.band ?? faker.name.lastName(),
         cover: input.cover ?? faker.image.imageUrl(),
+        mimetype: input.mimetype ?? 'png',
         price: input.price ?? faker.datatype.number(60),
         stock: input.stock ?? faker.datatype.number(10),
         disabled: input.disabled ?? false,
+        deleted: input.deleted ?? false,
       },
     });
   }

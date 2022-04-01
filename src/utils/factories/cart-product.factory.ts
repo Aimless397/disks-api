@@ -1,4 +1,4 @@
-import { Prisma, PrismaClient, CartProduct } from '@prisma/client';
+import { CartProduct, Prisma, PrismaClient } from '@prisma/client';
 import { AbstractFactory } from './abstract.factory';
 
 type CartProductInput = Prisma.CartProductCreateInput;
