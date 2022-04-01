@@ -12,15 +12,15 @@ export class CreateOrderDto {
   @Expose()
   @IsString()
   @IsNotEmpty()
-  uuid: string;
+  readonly uuid: string;
 
   @Expose()
   @IsNumber()
   @IsOptional()
-  total?: number;
+  readonly total?: number;
 
   @Expose()
   @IsBoolean()
   @IsOptional()
-  paid?: boolean;
+  readonly paid?: boolean;
 }

@@ -3,7 +3,7 @@ import { Exclude, Expose } from 'class-transformer';
 @Exclude()
 export class OrderDto {
   @Expose()
-  readonly id: number;
+  readonly id?: number;
 
   @Expose()
   readonly uuid: string;

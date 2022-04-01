@@ -1,30 +1,36 @@
 import { Exclude, Expose } from 'class-transformer';
-import { IsBoolean, IsNotEmpty, IsNumber } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsPositive,
+  IsString,
+} from 'class-validator';
 
 @Exclude()
 export class CreateCartProductDto {
   @Expose()
   @IsNumber()
+  @IsOptional()
   @IsNotEmpty()
-  orderId: number;
+  readonly orderId?: number;
 
   @Expose()
-  @IsNumber()
+  @IsString()
   @IsNotEmpty()
-  diskId: number;
+  readonly diskUuid: string;
 
   @Expose()
-  @IsNumber()
+  @IsInt()
+  @IsPositive()
   @IsNotEmpty()
-  amount: number;
-
-  @Expose()
-  @IsNumber()
-  @IsNotEmpty()
-  selectionPrice: number;
+  readonly amount: number;
 
   @Expose()
   @IsBoolean()
+  @IsOptional()
   @IsNotEmpty()
-  state: boolean;
+  readonly state?: boolean;
 }

@@ -2,9 +2,14 @@ import { Exclude, Expose } from 'class-transformer';
 import { IsNotEmpty, IsString } from 'class-validator';
 
 @Exclude()
-export class UpdateOrderDto {
+export class GetOrderDto {
   @Expose()
   @IsString()
   @IsNotEmpty()
-  readonly uuid: string; // orderId
+  readonly orderUuid: string;
+
+  @Expose()
+  @IsString()
+  @IsNotEmpty()
+  readonly userUuid: string;
 }
