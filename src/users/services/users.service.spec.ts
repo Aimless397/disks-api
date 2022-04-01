@@ -1,8 +1,8 @@
+import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { prisma } from '../../prisma';
+import { clearDatabase, prisma } from '../../prisma';
 import { UserFactory } from '../../utils/factories/user.factory';
 import { UsersService } from './users.service';
-import { JwtModule } from '@nestjs/jwt';
 
 describe('UsersService', () => {
   let userFactory: UserFactory;
@@ -25,6 +25,11 @@ describe('UsersService', () => {
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
+  });
+
+  afterAll(async () => {
+    await clearDatabase();
+    await prisma.$disconnect();
   });
 
   it('should return a user found by UUID', async () => {
