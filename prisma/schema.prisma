@@ -49,9 +49,11 @@ model Disk {
   year              Int
   band              String
   cover             String?
+  mimetype          String?
   price             Float         @db.Real
   stock             Int
   disabled          Boolean       @default(false)
+  deleted           Boolean       @default(false)
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
 
@@ -78,11 +80,13 @@ model Order {
 
 model UserReaction {
   id                Int           @id @default(autoincrement())
+  uuid              String        @unique @default(uuid())
   userId            Int           @map("user_id")
   user              User          @relation(fields: [userId], references: [id])
   diskId            Int           @map("disk_id")
   disk              Disk          @relation(fields: [diskId], references: [id])
   like              Boolean       @default(true)
+  likedAt           DateTime?     @db.Timestamp(0) @map("liked_at")
   createdAt         DateTime      @default(now()) @map("created_at")
   updatedAt         DateTime      @updatedAt @map("updated_at")
 
