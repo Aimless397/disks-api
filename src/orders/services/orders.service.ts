@@ -1,17 +1,27 @@
-import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { plainToInstance } from 'class-transformer';
+import { DisksService } from '../../disks/services/disks.service';
+import { SendgridService } from '../../email/services/sendgrid.service';
 import { prisma } from '../../prisma';
 import { CreateCartProductDto } from '../dtos/request/create-cart-product.dto';
 import { CreateOrderDto } from '../dtos/request/create-order.dto';
+import { GetOrderDto } from '../dtos/request/get-order.dto';
+import { UpdateOrderDto } from '../dtos/request/update-order.dto';
 import { CartProductDto } from '../dtos/response/get-cart-product.dto';
 import { OrderDto } from '../dtos/response/get-orders.dto';
-import { DisksService } from '../../disks/services/disks.service';
-import { UpdateOrderDto } from '../dtos/request/update-order.dto';
 
 @Injectable()
 export class OrdersService {
-  constructor(private disksService: DisksService) {}
+  constructor(
+    private readonly sendgridService: SendgridService,
+    private readonly disksService: DisksService,
+    private readonly eventEmitter: EventEmitter2,
+  ) {}
 
   async getAll(): Promise<OrderDto[]> {
     const orders = await prisma.order.findMany({ where: { paid: true } });
@@ -34,15 +44,37 @@ export class OrdersService {
 
   async createCartProduct(
     uuid: string,
+    userUuid: string,
     input: CreateCartProductDto,
   ): Promise<CartProductDto> {
-    const order = await prisma.order.findUnique({
-      where: { uuid },
+    const order = await prisma.order.findUnique({ where: { uuid } });
+    const user = await prisma.user.findUnique({ where: { id: order.userId } });
+    if (user.uuid !== userUuid) {
+      throw new NotFoundException(`Order doesn't belong to user`);
+    }
+    const disk = await prisma.disk.findUnique({
+      where: { uuid: input.diskUuid },
     });
-    const disk = await prisma.disk.findUnique({ where: { id: input.diskId } });
+
+    if (disk.stock < input.amount) {
+      throw new BadRequestException(
+        'Quantity to buy exceeds the available stock',
+      );
+    }
+
+    /* const diskUpdated = await prisma.disk.update({
+      data: {
+        stock: disk.stock - input.amount,
+      },
+      where: {
+        uuid: input.diskUuid,
+      },
+    }); */
+
     const cartProduct = await prisma.cartProduct.create({
       data: {
-        ...input,
+        diskId: disk.id,
+        amount: input.amount,
         orderId: order.id,
         selectionPrice: input.amount * disk.price,
       },
@@ -52,9 +84,53 @@ export class OrdersService {
   }
 
   async payment(input: UpdateOrderDto): Promise<OrderDto> {
-    const cartProducts = await prisma.cartProduct.findMany({
-      where: { orderId: input.id },
+    const order = await prisma.order.findUnique({
+      where: { uuid: input.uuid },
     });
+
+    // TODO: TEST IT
+    if (order.paid) {
+      throw new BadRequestException('Order already paid');
+    }
+    //
+
+    const cartProducts = await prisma.cartProduct.findMany({
+      where: { orderId: order.id },
+    });
+
+    // TODO: TEST IT
+    if (!cartProducts.length) {
+      throw new NotFoundException('No products added yet');
+    }
+
+    const diskIds: number[] = [];
+    // TODO: TEST IT
+    for (const cartProduct of cartProducts) {
+      const disk = await prisma.disk.findUnique({
+        where: { id: cartProduct.diskId },
+      });
+
+      if (disk.stock < cartProduct.amount) {
+        throw new BadRequestException(
+          'Quantity to buy exceeds the available stock',
+        );
+      }
+
+      const diskUpdated = await prisma.disk.update({
+        data: {
+          stock: disk.stock - cartProduct.amount,
+        },
+        where: {
+          uuid: disk.uuid,
+        },
+      });
+
+      if (diskUpdated.stock <= 3) {
+        diskIds.push(diskUpdated.id);
+      }
+      /* }); */
+      //
+    }
 
     const totalPrice = cartProducts
       .map((a) => a.selectionPrice)
@@ -62,13 +138,29 @@ export class OrdersService {
 
     const orderUpdated = await prisma.order.update({
       data: {
-        ...input,
         total: totalPrice,
         paid: true,
       },
-      where: { id: input.id },
+      where: { uuid: input.uuid },
     });
 
+    this.eventEmitter.emit('order.updated', diskIds);
+
     return plainToInstance(OrderDto, orderUpdated);
+  }
+
+  async getOrder(input: GetOrderDto): Promise<OrderDto> {
+    const order = await prisma.order.findUnique({
+      where: { uuid: input.orderUuid },
+    });
+    const user = await prisma.user.findUnique({
+      where: { uuid: input.userUuid },
+    });
+
+    if (order.userId !== user.id) {
+      throw new NotFoundException();
+    }
+
+    return plainToInstance(OrderDto, order);
   }
 }
