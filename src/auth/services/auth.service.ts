@@ -1,26 +1,29 @@
 import {
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { prisma } from '../../prisma';
-import { UnprocessableEntity } from 'http-errors';
-import { UsersService } from '../../users/services/users.service';
-import { ValidateUserResponse } from '../dtos/response/validate-user-response';
-import { compareSync, hashSync } from 'bcryptjs';
 import { Token, User } from '@prisma/client';
-import { sign, verify } from 'jsonwebtoken';
-import { TokenDto } from '../dtos/response/token.dto';
-import { CreateUserDto } from '../dtos/request/create-user.dto';
+import { compareSync, hashSync } from 'bcryptjs';
 import { plainToInstance } from 'class-transformer';
-import { JwtService } from '@nestjs/jwt';
+import { UnprocessableEntity } from 'http-errors';
+import { sign, verify } from 'jsonwebtoken';
+import { SendgridService } from '../../email/services/sendgrid.service';
+import { prisma } from '../../prisma';
+import { UsersService } from '../../users/services/users.service';
+import { ChangePasswordDto } from '../dtos/request/change-password.dto';
+import { CreateUserDto } from '../dtos/request/create-user.dto';
+import { ChangePasswordResponseDto } from '../dtos/response/change-password-response.dto';
+import { TokenDto } from '../dtos/response/token.dto';
+import { ValidateUserResponse } from '../dtos/response/validate-user-response';
 
 @Injectable()
 export class AuthService {
   static usersService: UsersService;
   constructor(
-    private usersService: UsersService,
-    private jwtService?: JwtService,
+    private readonly usersService: UsersService,
+    private readonly sendgridService: SendgridService,
   ) {}
 
   async validateUser(
@@ -54,10 +57,8 @@ export class AuthService {
 
       return true;
     } catch (error) {
-      console.error(error);
+      throw new NotFoundException();
     }
-
-    return false;
   }
 
   async create({ password, ...input }: CreateUserDto): Promise<TokenDto> {
@@ -119,5 +120,72 @@ export class AuthService {
     return {
       accessToken,
     };
+  }
+
+  async passwordRecovery(email: string): Promise<void> {
+    try {
+      const user = await prisma.user.findUnique({ where: { email } });
+
+      return await this.sendgridService.sendEmail({
+        email: user.email,
+        userUuid: user.uuid,
+        objective: 'recover',
+        securityQuestion: user.securityQuestion,
+      });
+    } catch (error) {
+      throw new NotFoundException();
+    }
+  }
+
+  async changePassword(
+    uuid: string,
+    {
+      securityQuestion,
+      securityAnswer,
+      newPassword,
+      confirmPassword,
+    }: ChangePasswordDto,
+  ): Promise<ChangePasswordResponseDto> {
+    try {
+      if (newPassword !== confirmPassword) {
+        return plainToInstance(ChangePasswordResponseDto, {
+          status: '400',
+          message: `Passwords doesn't match`,
+        });
+      }
+
+      const user = await prisma.user.findUnique({ where: { uuid } });
+
+      if (
+        user.securityQuestion !== securityQuestion ||
+        user.securityAnswer.toUpperCase() !== securityAnswer.toUpperCase()
+      ) {
+        return plainToInstance(ChangePasswordResponseDto, {
+          status: '400',
+          message: `Security answer doesn't match with security question`,
+        });
+      }
+
+      await prisma.user.update({
+        data: {
+          password: hashSync(newPassword, 10),
+        },
+        where: {
+          uuid,
+        },
+      });
+
+      await this.sendgridService.sendEmail({
+        email: user.email,
+        objective: 'success',
+      });
+
+      return plainToInstance(ChangePasswordResponseDto, {
+        status: '200',
+        message: 'Password changed successfully',
+      });
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
