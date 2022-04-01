@@ -1,5 +1,10 @@
-import { Controller, Get, UseGuards, Request } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Request, UseGuards } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { plainToInstance } from 'class-transformer';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { Roles } from '../decorators/roles.decorator';
@@ -10,12 +15,13 @@ import { UsersService } from '../services/users.service';
 @ApiTags('users')
 @Controller('users')
 export class UsersController {
-  constructor(private usersService: UsersService) {}
+  constructor(private readonly usersService: UsersService) {}
 
   @Get('profile')
   @ApiOperation({ summary: 'Get profile from authenticated user' })
   @ApiResponse({ status: 200, description: 'Profile detail' })
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   @Roles(Role.CLIENT)
   getProfile(@Request() req): GetUserDto {
     const { uuid } = req.user;
