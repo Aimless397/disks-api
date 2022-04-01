@@ -1,25 +1,30 @@
-import { User } from '@prisma/client';
-import { plainToClass } from 'class-transformer';
-import { prisma } from '../../prisma';
-import * as faker from 'faker';
-import { UsersService } from '../../users/services/users.service';
-import { UserFactory } from '../../utils/factories/user.factory';
-import { CreateUserDto } from '../dtos/request/create-user.dto';
-import { AuthService } from './auth.service';
-import { Role } from '../../users/enums/user-role.enum';
-import { hashSync } from 'bcryptjs';
-import { UnprocessableEntity } from 'http-errors';
+import { NotFoundException } from '@nestjs/common';
 import {
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common/exceptions';
-import { Test } from '@nestjs/testing';
+import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
-import { JsonWebTokenError } from 'jsonwebtoken';
+import { Test } from '@nestjs/testing';
+import { User } from '@prisma/client';
+import { hashSync } from 'bcryptjs';
+import { plainToClass } from 'class-transformer';
+import * as faker from 'faker';
+import { NotFound, UnprocessableEntity } from 'http-errors';
+import { SendgridService } from '../../email/services/sendgrid.service';
+import { clearDatabase, prisma } from '../../prisma';
+import { Role } from '../../users/enums/user-role.enum';
+import { UsersService } from '../../users/services/users.service';
+import { UserFactory } from '../../utils/factories/user.factory';
+import { ChangePasswordDto } from '../dtos/request/change-password.dto';
+import { CreateUserDto } from '../dtos/request/create-user.dto';
+import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
   let userFactory: UserFactory;
   let authService: AuthService;
+  let sendgridService: SendgridService;
+  let user: User;
 
   beforeAll(() => {
     userFactory = new UserFactory(prisma);
@@ -33,11 +38,18 @@ describe('AuthService', () => {
           secret: process.env.JWT_SECRET_KEY,
           signOptions: { expiresIn: '24h' },
         }),
+        ConfigModule,
       ],
-      providers: [AuthService, UsersService],
+      providers: [AuthService, UsersService, SendgridService],
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
+    sendgridService = module.get<SendgridService>(SendgridService);
+  });
+
+  afterAll(async () => {
+    await clearDatabase();
+    await prisma.$disconnect();
   });
 
   describe('signup', () => {
@@ -96,13 +108,11 @@ describe('AuthService', () => {
     });
 
     it('should throw an error if the token was invalid', async () => {
-      const spyConsole = jest
-        .spyOn(console, 'error')
-        .mockImplementation(jest.fn());
+      const fakeToken = faker.lorem.word();
 
-      await authService.logout(faker.lorem.word());
-
-      expect(spyConsole).toBeCalledWith(new JsonWebTokenError('jwt malformed'));
+      await expect(authService.logout(fakeToken)).rejects.toThrowError(
+        new NotFound(),
+      );
     });
   });
 
@@ -124,6 +134,81 @@ describe('AuthService', () => {
       await expect(
         authService.validateUser(username, password),
       ).rejects.toThrowError(new UnauthorizedException('Invalid credentials'));
+    });
+  });
+
+  describe('passwordRecovery', () => {
+    it('should send an email to the user who request the password recovery', async () => {
+      const user = await userFactory.make();
+      const spySendEmail = jest.spyOn(sendgridService, 'sendEmail');
+
+      const result = await authService.passwordRecovery(user.email);
+
+      expect(result).toBeUndefined();
+      expect(spySendEmail).toBeCalledTimes(1);
+    });
+
+    it(`should throw a notFound exception if the user's email doesn't exist`, async () => {
+      await expect(
+        authService.passwordRecovery(faker.internet.email()),
+      ).rejects.toThrowError(new NotFoundException());
+    });
+  });
+
+  describe('changePassword', () => {
+    let user: User;
+    let password: string;
+    let changePasswordDto: ChangePasswordDto;
+
+    beforeEach(async () => {
+      user = await userFactory.make();
+      password = faker.internet.password();
+      changePasswordDto = {
+        securityQuestion: user.securityQuestion,
+        securityAnswer: user.securityAnswer,
+        newPassword: password,
+        confirmPassword: password,
+      } as ChangePasswordDto;
+    });
+
+    it('should reset password and send email', async () => {
+      const spySendEmail = jest.spyOn(sendgridService, 'sendEmail');
+      const result = await authService.changePassword(
+        user.uuid,
+        changePasswordDto,
+      );
+
+      expect(result).toHaveProperty('status');
+      expect(result).toHaveProperty('message');
+      expect(result.status).toBe('200');
+      expect(result.message).toBe(`Password changed successfully`);
+      expect(spySendEmail).toBeCalledTimes(1);
+    });
+
+    it(`should return status 400 and a message if the passwords doesn't match`, async () => {
+      const result = await authService.changePassword(user.uuid, {
+        securityQuestion: changePasswordDto.securityQuestion,
+        securityAnswer: changePasswordDto.securityAnswer,
+        newPassword: changePasswordDto.newPassword,
+        confirmPassword: faker.internet.password(),
+      });
+
+      expect(result.status).toBe('400');
+      expect(result.message).toBe(`Passwords doesn't match`);
+    });
+
+    it(`should return status 400 and a message if the security question doesn't match`, async () => {
+      const result = await authService.changePassword(user.uuid, {
+        securityQuestion: changePasswordDto.securityQuestion,
+        securityAnswer: `${changePasswordDto.securityAnswer} answer`,
+        newPassword: changePasswordDto.newPassword,
+        confirmPassword: changePasswordDto.confirmPassword,
+      });
+
+      expect(result.status).toBe('400');
+      expect(result.message).toBe(
+        `Security answer doesn't match with security question`,
+      );
     });
   });
 });
