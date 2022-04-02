@@ -22,7 +22,7 @@
     "prisma:migrate:test": "dotenv -e .env.test -- prisma migrate dev",
     "prisma:generate": "prisma generate",
     "prisma:generate:test": "dotenv -e .env.test -- prisma generate",
-    "start:prod": "node dist/src/main.js",
+    "start:prod": "node dist/main.js",
     "postinstall": "npx prisma generate && npm run build"
   },
   "dependencies": {
