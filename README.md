@@ -1,83 +1,155 @@
+<div id="top"></div>
+
+# DISKS API
+
+## About The Project
+
+Disks API is a REST & GraphQL API using TypeScript, NestJS, Prisma, PostgreSQL, Apollo Server and GraphQL.
+This API allows you to create, update, like, disable, deleted, uploadImage disks, also you can create orders and buy disks.
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+The main entities used in the API Postman Documentation will be:
+
+* Auth / Users
+* Disks
+* Orders
+
+##
+
+### Auth / Users
+Manage user authentication endpoints:
+
+* Login
+* Signup
+* Profile
+* Logout
+* PasswordRecovery
+
+### Disks
+Manage disk endpoints:
+
+* GetAllDisks
+* FindOneDisk
+* CreateDisk
+* UpdateDisk
+* DeleteDisk
+* DisableDisk
+* GenerateSignedUrl
+* UploadImageFromSignedUrl
+* LikeDisk
+
+### Orders
+Manage order endpoints:
+
+* GetAllOrders
+* FindOneOrder
+* AddToCart
+* Payment
+* GetMyOrder
+
+##
+
+## Built With
+
+This project was built using these main technologies.
+
+* [NestJS](https://nestjs.com//)
+* [Jest.js](https://jestjs.io/)
+* [TypeScript](https://www.typescriptlang.org/)
+* [PostgreSQL](https://www.postgresql.org/)
+* [Prisma](https://www.prisma.io/)
+* [GraphQL](https://graphql.org/)
+
+<p align="right">(<a href="#top">back to top</a>)</p>
+
+<!-- GETTING STARTED -->
+## Getting Started
+
+To get a local copy up and running follow these simple example steps.
+### Prerequisites
+
+* npm
+
+  ```sh
+  npm install npm@latest -g
+  
+  ```
+### Installation
+1. Get a free API Key at [https://signup.sendgrid.com](https://signup.sendgrid.com)
+2. Clone the repo
+   ```sh
+   
+   git clone https://github.com/Aimless397/disks-api.git
+   ```
+3. Install NPM packages
+   ```sh
+   
+   npm install
+   
+   ```
+4. Enter your Environment Variables in `.env`
+
+   ```js
+   PORT
+   DATABASE_URL
+   JWT_EXPIRATION_TIME
+   JWT_SECRET_KEY
+
+   SENDGRID_API_KEY
+   AWS_REGION
+   AWS_ACCESS_KEY_ID
+   AWS_SECRET_ACCESS_KEY
+   AWS_PUBLIC_BUCKET_NAME
+   AWS_EXPIRE_TIME=18000
+   
+   SENDGRID_API_KEY
+   SENDGRID_SENDER_EMAIL
+   
+   ```
+5. Create a PostgreSQL database and setup connection
+   ```sh
+   
+   DATABASE_URL = postgresql://username:password@localhost:port/DB_NAME?schema-public
+   PORT = default(5432)
+   
+   ```
+6. Install PrismaCLI and execute Prisma Migration script to execute the migrations, and also run Prisma Generate command.
+   ```
+   npm install @prisma/cli --save-dev
+   npm run prisma:migrate
+   npm run prisma:generate
+   ```
+7. To run the server, use the following command:
+   ```
+   npm run start:dev
+   ```
+8. To run tests, use the following command:
+  ```
+  npm run test:watch
+  ```
+  Run tests collecting coverage:
+  ```
+  npm run test:cov
+  ```
+<p align="right">(<a href="#top">back to top</a>)</p>
+ 
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
+ <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo_text.svg" width="320" alt="Nest Logo" /></a>
 </p>
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Disks API on Heroku
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+https://disks-api.herokuapp.com/
 
-## Description
+## Swagger Documentation
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+https://disks-api.herokuapp.com/api
 
-## Installation
+## PlayGround Documentation
 
-```bash
-$ npm install
-```
-
-## Running the app
-
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Generate database tables from migrations
-```bash
-
-$ npx prisma migrate dev
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
-```
+https://disks-api.herokuapp.com/graphql
 
 ## Postman Documentation
 
 https://documenter.getpostman.com/view/13158230/UVsHV8PU
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](LICENSE).
