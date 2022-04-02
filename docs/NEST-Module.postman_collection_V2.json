@@ -1,0 +1,689 @@
+{
+	"info": {
+		"_postman_id": "081653a5-164a-4124-b0e2-768ad6361884",
+		"name": "NEST-Module",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "REST",
+			"item": [
+				{
+					"name": "disks-api",
+					"item": [
+						{
+							"name": "Auth",
+							"item": [
+								{
+									"name": "Login",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"username\": \"username_test\",\r\n    \"password\": \"password_test\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/auth/login",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"auth",
+												"login"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Signup",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"role\": \"manager\",\r\n    \"email\": \"test@gmail.com\",\r\n    \"username\": \"test\",\r\n    \"password\": \"password123\",\r\n    \"firstName\": \"FirstName\",\r\n    \"lastName\": \"LastName\",\r\n    \"securityQuestion\": \"Question\",\r\n    \"securityAnswer\": \"Answer\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/auth/signup",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"auth",
+												"signup"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Profile",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/users/profile",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"users",
+												"profile"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Logout",
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/auth/logout?token={{token}}",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"auth",
+												"logout"
+											],
+											"query": [
+												{
+													"key": "token",
+													"value": "{{token}}"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "PasswordRecovery",
+									"request": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"email\": \"email@gmail.com\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/auth/password-recovery",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"auth",
+												"password-recovery"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Disks",
+							"item": [
+								{
+									"name": "GetAllDisks",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "noauth"
+										},
+										"method": "GET",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/disks?page=0&limit=10",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks"
+											],
+											"query": [
+												{
+													"key": "genre",
+													"value": "Rock",
+													"disabled": true
+												},
+												{
+													"key": "page",
+													"value": "0"
+												},
+												{
+													"key": "limit",
+													"value": "10"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "FindOneDisk",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/disks/paste_disk_uuid",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks",
+												"paste_disk_uuid"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "CreateDisk",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-manager}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"name_test\",\r\n    \"genre\": \"genre_test\",\r\n    \"subgenre\": \"subgenre_test\",\r\n    \"year\": 2022,\r\n    \"band\": \"band_test\",\r\n    \"price\": 10,\r\n    \"stock\": 20,\r\n    \"disabled\": false,\r\n    \"deleted\": false\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/disks",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "UpdateDisk",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-manager}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"name\": \"name_to_update\",\r\n    \"genre\": \"genre_to_update\",\r\n    \"subgenre\": \"subgenre_to_update\",\r\n    \"year\": 2010,\r\n    \"band\": \"band_to_update\",\r\n    \"price\": 9,\r\n    \"stock\": 10\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/disks/paste_disk_uuid",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks",
+												"paste_disk_uuid"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "DeleteDisk",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-manager}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "DELETE",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/disks/paste_disk_uuid",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks",
+												"paste_disk_uuid"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "DisableDisk",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-manager}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/disks/paste_disk_uuid/disable",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks",
+												"paste_disk_uuid",
+												"disable"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GenerateSignedUrl",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-manager}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"body": {
+											"mode": "formdata",
+											"formdata": [
+												{
+													"key": "file",
+													"type": "file",
+													"src": [],
+													"disabled": true
+												},
+												{
+													"key": "type",
+													"value": "png",
+													"type": "text"
+												}
+											]
+										},
+										"url": {
+											"raw": "{{uri}}/disks/paste_disk_uuid/upload-cover",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks",
+												"paste_disk_uuid",
+												"upload-cover"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "UploadImageFromSignedUrl",
+									"request": {
+										"method": "PUT",
+										"header": [],
+										"body": {
+											"mode": "file",
+											"file": {
+												"src": "/C:/Users/dougl/Pictures/Saved Pictures/COVERS/unlimited-love.png"
+											}
+										},
+										"url": {
+											"raw": "https://cz-nestjs-public-bucket.s3.sa-east-1.amazonaws.com/d1868ef1-0b6c-445f-969c-d1de9f13d9d6.png?Content-Type=image%2Fpng&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIA2AANV7KHMVRQWX6R%2F20220331%2Fsa-east-1%2Fs3%2Faws4_request&X-Amz-Date=20220331T030232Z&X-Amz-Expires=18000&X-Amz-Signature=6952898b8fedd5f30ac75d242bb7033d29eb91f057eaef5c698132676799708d&X-Amz-SignedHeaders=host",
+											"protocol": "https",
+											"host": [
+												"cz-nestjs-public-bucket",
+												"s3",
+												"sa-east-1",
+												"amazonaws",
+												"com"
+											],
+											"path": [
+												"d1868ef1-0b6c-445f-969c-d1de9f13d9d6.png"
+											],
+											"query": [
+												{
+													"key": "Content-Type",
+													"value": "image%2Fpng"
+												},
+												{
+													"key": "X-Amz-Algorithm",
+													"value": "AWS4-HMAC-SHA256"
+												},
+												{
+													"key": "X-Amz-Credential",
+													"value": "AKIA2AANV7KHMVRQWX6R%2F20220331%2Fsa-east-1%2Fs3%2Faws4_request"
+												},
+												{
+													"key": "X-Amz-Date",
+													"value": "20220331T030232Z"
+												},
+												{
+													"key": "X-Amz-Expires",
+													"value": "18000"
+												},
+												{
+													"key": "X-Amz-Signature",
+													"value": "6952898b8fedd5f30ac75d242bb7033d29eb91f057eaef5c698132676799708d"
+												},
+												{
+													"key": "X-Amz-SignedHeaders",
+													"value": "host"
+												}
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "LikeDisk",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/disks/paste_disk_uuid/like",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"disks",
+												"paste_disk_uuid",
+												"like"
+											]
+										}
+									},
+									"response": []
+								}
+							],
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"type": "text/javascript",
+										"exec": [
+											""
+										]
+									}
+								}
+							]
+						},
+						{
+							"name": "Orders",
+							"item": [
+								{
+									"name": "GetAllOrders",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-manager}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/orders",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"orders"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "CreateOrder",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/orders/",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"orders",
+												""
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "AddToCart",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"diskUuid\": \"disk_uuid\",\r\n    \"amount\": 18,\r\n    \"state\": true\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{uri}}/orders/paste_order_uuid/add-to-cart",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"orders",
+												"paste_order_uuid",
+												"add-to-cart"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Payment",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PATCH",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/orders/paste_order_uuid/payment",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"orders",
+												"paste_order_uuid",
+												"payment"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "GetMyOrder",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{token-client}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{uri}}/orders/paste_order_uuid",
+											"host": [
+												"{{uri}}"
+											],
+											"path": [
+												"orders",
+												"paste_order_uuid"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		}
+	]
+}
